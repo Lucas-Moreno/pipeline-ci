@@ -1,0 +1,27 @@
+image: node:18.17.1
+
+stages:
+  - build
+
+variables:
+  NODE_ENV: "development"
+
+before_script:
+  - cd front
+  - npm install
+
+lint:
+  stage: build
+  script:
+    - npm run lint
+  only:
+    changes:
+      - "front/**/*"
+
+test:
+  stage: build
+  script:
+    - npm run test-ci
+  only:
+    changes:
+      - "front/**/*"

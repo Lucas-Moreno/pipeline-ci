@@ -1,0 +1,45 @@
+name: CI Authentification Service
+
+on:
+  push:
+    paths:
+      - "AuthentificationService/**"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions: read-all
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: "8.1"
+
+      - name: Update Composer dependencies
+        run: |
+          cd AuthentificationService
+          composer update
+
+      - name: Install Composer dependencies
+        run: |
+          cd AuthentificationService
+          composer install
+
+      - name: Install phpunit
+        run: |
+          cd AuthentificationService
+          sudo apt install phpunit
+
+      - name: Run PHPUnit tests
+        run: |
+          cd AuthentificationService
+          vendor/bin/phpunit
+
+      - uses: sonarsource/sonarqube-scan-action@master
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
